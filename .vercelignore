@@ -1,0 +1,9 @@
+# portfolio.html 외에는 배포에 포함하지 않음 (개인정보·내부 문서 노출 방지)
+CLAUDE.md
+SECURITY.md
+README.md
+prompt.md
+docs/
+scripts/
+tasks/
+weather.txt
