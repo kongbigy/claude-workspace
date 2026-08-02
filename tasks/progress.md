@@ -46,3 +46,12 @@
   - `vercel.json` 추가 — 루트 URL(`/`)이 `portfolio.html`을 서빙하도록 rewrite
   - `.vercelignore` 추가 — resume.pdf, SECURITY.md, tasks/, scripts/ 등 배포 시 공개되면 안 되는 파일 제외 (Vercel 배포 URL은 기본 공개이므로 사전 확인 필요했음)
   - README.md에 배포 섹션 및 파일 설명 추가
+
+## 2026-08-03 — 포트폴리오 방명록 기능 추가
+
+- Supabase(Postgres) 기반 방명록 기능 구현
+  - `scripts/supabase_guestbook.sql` 작성 — `messages` 테이블(id, name, content, created_at) + RLS 정책(누구나 읽기·쓰기, 수정/삭제 정책은 없음) — tony가 Supabase 대시보드 SQL Editor에서 직접 실행
+  - `portfolio.html`이 순수 정적 HTML(빌드 도구 없음)이라 `.env.local`을 브라우저가 읽을 수 없어, tony 확인 후 `config.js`(Supabase URL·anon key)로 분리하는 방식 채택 — anon key는 Supabase 설계상 공개돼도 안전한 값(RLS가 실제 보안 경계)이라 git에 커밋되어 Vercel에 그대로 배포됨
+  - `portfolio.html` 맨 아래에 방명록 섹션 추가 (이름/메시지 입력 폼 + 목록), Supabase JS SDK(CDN)로 연동, XSS 방지를 위해 사용자 입력은 textContent로 이스케이프 후 렌더링
+  - 로컬 서버(`python -m http.server`)로 실제 글 작성 → 목록 반영 확인, 라이트/다크 모드 모두 확인 완료
+  - 테스트로 남긴 "테스트 방문자" 글 1건이 Supabase `messages` 테이블에 남아있음 — RLS에 delete 정책을 안 넣어서 API로는 삭제 불가, 지우려면 tony가 Supabase 대시보드에서 직접 삭제 필요

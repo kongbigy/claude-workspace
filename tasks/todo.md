@@ -53,6 +53,21 @@ resume.pdf/portfolio.html 포함, weather.txt 제외 (tony 확인 완료)
 
 ---
 
+## 2026-08-03 — 포트폴리오 방명록 기능 추가
+
+**목표:** portfolio.html 맨 아래에 방명록(폼+리스트) 추가, Supabase(messages 테이블)에 저장/조회
+
+**결정 사항 (tony 확인):** anon key는 `config.js` 파일로 분리해서 관리. 이 파일은 git에 커밋되어 Vercel에 그대로 배포됨 (anon key는 Supabase 설계상 공개되어도 안전 — RLS가 실제 보안 경계). 빌드 단계는 추가하지 않음.
+
+**계획:**
+1. [x] Supabase SQL 스크립트 작성 (`messages` 테이블: id, name, content, created_at + RLS 정책) — tony가 Supabase 대시보드 SQL Editor에서 직접 실행 완료
+2. [x] `config.js` 생성 — Supabase URL + anon key 저장 (portfolio.html이 이 파일을 불러다 씀)
+3. [x] `portfolio.html` 맨 아래에 방명록 섹션 추가 — 이름/메시지 입력 폼 + 작성된 목록 표시, Supabase JS SDK(CDN)로 연동
+4. [x] 로컬 테스트 — 정적 서버(`python -m http.server`)로 열어서 직접 글 작성 → 목록에 정상 반영 확인, 다크모드도 확인
+5. [x] `tasks/progress.md`에 결과 기록
+
+---
+
 ## 새 작업 추가하는 법
 
 ```

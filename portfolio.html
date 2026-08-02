@@ -176,6 +176,58 @@
   }
   .theme-toggle:hover { transform: scale(1.08); }
   .theme-toggle:active { transform: scale(0.95); }
+
+  /* Guestbook */
+  .guestbook-form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 24px;
+  }
+  .guestbook-form input,
+  .guestbook-form textarea {
+    font-family: inherit;
+    font-size: 14.5px;
+    padding: 10px 14px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: var(--card-bg);
+    color: var(--text);
+  }
+  .guestbook-form textarea { resize: vertical; min-height: 72px; }
+  .guestbook-form button {
+    align-self: flex-end;
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 600;
+    padding: 9px 20px;
+    border-radius: 8px;
+    border: none;
+    background: var(--accent);
+    color: #fff;
+    cursor: pointer;
+  }
+  .guestbook-form button:hover { background: var(--accent-light); }
+  .guestbook-form button:disabled { opacity: 0.6; cursor: default; }
+  .guestbook-error { color: #dc2626; font-size: 13px; margin-top: -4px; }
+  .guestbook-list { display: flex; flex-direction: column; gap: 12px; }
+  .guestbook-item {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 16px 18px;
+  }
+  .guestbook-item-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 8px;
+    margin-bottom: 6px;
+  }
+  .guestbook-item-name { font-weight: 700; font-size: 14.5px; }
+  .guestbook-item-date { font-size: 12px; color: var(--text-soft); white-space: nowrap; }
+  .guestbook-item-content { font-size: 14.5px; white-space: pre-wrap; word-break: break-word; }
+  .guestbook-empty { font-size: 14px; color: var(--text-soft); }
 </style>
 </head>
 <body>
@@ -261,6 +313,19 @@
     </div>
   </section>
 
+  <section id="guestbook">
+    <h2>방명록</h2>
+    <form id="guestbook-form" class="guestbook-form">
+      <input type="text" id="guestbook-name" placeholder="이름" maxlength="50" required>
+      <textarea id="guestbook-content" placeholder="메시지를 남겨주세요" maxlength="500" required></textarea>
+      <p id="guestbook-error" class="guestbook-error" hidden></p>
+      <button type="submit">남기기</button>
+    </form>
+    <div id="guestbook-list" class="guestbook-list">
+      <p class="guestbook-empty">방명록을 불러오는 중...</p>
+    </div>
+  </section>
+
 </main>
 
 <footer>© 2026 김수민. All rights reserved.</footer>
@@ -292,6 +357,90 @@
     localStorage.setItem('theme', next);
     updateIcon();
   });
+})();
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="config.js"></script>
+<script>
+(function () {
+  var client = supabase.createClient(window.SUPABASE_URL, window.SUPABASE_ANON_KEY);
+  var form = document.getElementById('guestbook-form');
+  var nameInput = document.getElementById('guestbook-name');
+  var contentInput = document.getElementById('guestbook-content');
+  var errorEl = document.getElementById('guestbook-error');
+  var listEl = document.getElementById('guestbook-list');
+
+  function escapeHtml(str) {
+    var div = document.createElement('div');
+    div.textContent = str;
+    return div.innerHTML;
+  }
+
+  function formatDate(iso) {
+    var d = new Date(iso);
+    return d.toLocaleString('ko-KR', { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' });
+  }
+
+  function showError(msg) {
+    errorEl.textContent = msg;
+    errorEl.hidden = !msg;
+  }
+
+  function renderList(rows) {
+    if (!rows || rows.length === 0) {
+      listEl.innerHTML = '<p class="guestbook-empty">아직 남겨진 메시지가 없어요. 첫 메시지를 남겨보세요!</p>';
+      return;
+    }
+    listEl.innerHTML = rows.map(function (row) {
+      return '<div class="guestbook-item">' +
+        '<div class="guestbook-item-head">' +
+          '<span class="guestbook-item-name">' + escapeHtml(row.name) + '</span>' +
+          '<span class="guestbook-item-date">' + formatDate(row.created_at) + '</span>' +
+        '</div>' +
+        '<div class="guestbook-item-content">' + escapeHtml(row.content) + '</div>' +
+      '</div>';
+    }).join('');
+  }
+
+  function loadMessages() {
+    client.from('messages').select('*').order('created_at', { ascending: false })
+      .then(function (res) {
+        if (res.error) {
+          listEl.innerHTML = '<p class="guestbook-empty">방명록을 불러오지 못했어요.</p>';
+          console.error(res.error);
+          return;
+        }
+        renderList(res.data);
+      });
+  }
+
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+    showError('');
+
+    var name = nameInput.value.trim();
+    var content = contentInput.value.trim();
+    if (!name || !content) return;
+
+    var submitBtn = form.querySelector('button[type="submit"]');
+    submitBtn.disabled = true;
+
+    client.from('messages').insert({ name: name, content: content })
+      .then(function (res) {
+        submitBtn.disabled = false;
+        if (res.error) {
+          showError('메시지 등록에 실패했어요. 잠시 후 다시 시도해주세요.');
+          console.error(res.error);
+          return;
+        }
+        nameInput.value = '';
+        contentInput.value = '';
+        loadMessages();
+      });
+  });
+
+  loadMessages();
 })();
 </script>
 
