@@ -43,12 +43,13 @@
 - `weather.txt`는 스크립트 실행 시마다 덮어써지는 결과물 — 소스코드가 아니라 추적 제외 후보
 
 **계획:**
-1. [ ] `.gitignore` 작성 (.env, *.key, *.pem, id_rsa*, credentials, __pycache__, weather.txt 등)
-2. [ ] `README.md`를 현재 실제 폴더 구조에 맞게 업데이트
-3. [ ] `git init` → `git add` → `git commit -m "Initial setup"`
-4. [ ] `gh repo create --private` 로 레포 생성 + push
+1. [x] `.gitignore` 작성 (.env, *.key, *.pem, id_rsa*, credentials, __pycache__, weather.txt 등)
+2. [x] `README.md`를 현재 실제 폴더 구조에 맞게 업데이트
+3. [x] `git init` → `git add` → `git commit -m "Initial setup"` (tony가 git user.name/email 직접 설정 후 진행)
+4. [x] `gh repo create --private` 로 레포 생성 + push
 
-**확인 필요 (tony님 답변 필요):** 레포 이름, resume.pdf/portfolio.html 포함 여부
+**결과:** https://github.com/kongbigy/claude-workspace (private, 11개 파일, 커밋 b74c3cf)
+resume.pdf/portfolio.html 포함, weather.txt 제외 (tony 확인 완료)
 
 ---
 
