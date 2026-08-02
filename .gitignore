@@ -1,0 +1,27 @@
+# 민감정보 (CLAUDE.md 보안 규칙)
+.env
+.env.*
+*.key
+*.pem
+id_rsa
+id_rsa.*
+id_ed25519
+id_ed25519.*
+*credentials*
+*secret*
+
+# 스크립트 실행 결과물 (매번 갱신되는 산출물, 소스코드 아님)
+weather.txt
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# OS
+Thumbs.db
+.DS_Store
+
+# Claude Code local settings
+.claude/settings.local.json
