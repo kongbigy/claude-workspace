@@ -41,3 +41,8 @@
   - `feature/dark-mode-toggle` 브랜치에서 작업 — 우측 상단 고정 버튼(🌙/☀️), `data-theme` 속성 + `localStorage`로 수동 선택 유지 (시스템 설정보다 우선)
   - 로컬 HTTP 서버(`python -m http.server`)로 임시 구동 후 브라우저에서 토글 동작·새로고침 후 상태 유지 확인
   - master에 `--no-ff` 머지 후 GitHub push, 로컬 feature 브랜치 삭제 완료
+
+- Vercel 배포 설정 준비 (배포 실행은 tony가 직접)
+  - `vercel.json` 추가 — 루트 URL(`/`)이 `portfolio.html`을 서빙하도록 rewrite
+  - `.vercelignore` 추가 — resume.pdf, SECURITY.md, tasks/, scripts/ 등 배포 시 공개되면 안 되는 파일 제외 (Vercel 배포 URL은 기본 공개이므로 사전 확인 필요했음)
+  - README.md에 배포 섹션 및 파일 설명 추가
