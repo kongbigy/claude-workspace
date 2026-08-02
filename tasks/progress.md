@@ -36,3 +36,8 @@
   - resume.pdf/portfolio.html(개인정보 포함)은 tony 확인 후 포함, weather.txt는 제외
   - git user.name/email 미설정 상태였음 — CLAUDE.md 코드 "git config는 직접 건드리지 않음" 규칙에 따라 tony가 직접 설정
   - `gh repo create --private --source=. --push` 로 생성 + 첫 커밋 "Initial setup" 푸시 완료
+
+- `portfolio.html`에 다크모드 토글 기능 추가
+  - `feature/dark-mode-toggle` 브랜치에서 작업 — 우측 상단 고정 버튼(🌙/☀️), `data-theme` 속성 + `localStorage`로 수동 선택 유지 (시스템 설정보다 우선)
+  - 로컬 HTTP 서버(`python -m http.server`)로 임시 구동 후 브라우저에서 토글 동작·새로고침 후 상태 유지 확인
+  - master에 `--no-ff` 머지 후 GitHub push, 로컬 feature 브랜치 삭제 완료
